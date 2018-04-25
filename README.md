@@ -1,1 +1,1 @@
-assets/md/PITCHME.md
+PITCHME.md

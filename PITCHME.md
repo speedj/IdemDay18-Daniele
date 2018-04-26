@@ -3,7 +3,7 @@
 ##### <span style="font-family:Helvetica Neue; font-weight:bold">Aggiornamento IdP e nuovi standard</span>
 Daniele Albrizio - albrizio@units.it - IDEM Day 2018
 
-
+ 
 ---
 
 
@@ -77,9 +77,9 @@ Daniele Albrizio - albrizio@units.it - IDEM Day 2018
 
 * idp-process.log: Messaggi di warning molto più chiari
 * Condizioni di errore user-facing maggiormente gestite (user experience più confortevole)
-* Interfaccia utente responsive web design (per tutti i dispositivi)
+* Interfaccia utente in responsive web design (per tutti i dispositivi)
  * Interfaccia completamente (e facilmente) internazionalizzabile
- * Testo modificabile runtime (reload automatico)
+ * Testo delle pagine modificabile runtime (reload automatico)
 
 
 ---
@@ -160,9 +160,9 @@ Power Features
 
 
 ## Extra Power
-* dipendenze degli attributi (Dependency) in modo da fare il merge di attributi con id sorgenti differenti
+* dipendenze degli attributi (Dependency) in modo da poter fare il merge di attributi con id sorgenti differenti
 * Tipo di autenticazione selezionabile per singolo SP
-* SSO disabilitabile per IP o con checkbox sulla pagina di login (vedi SPID)
+* SSO disabilitabile per IP (vedi caso SPID) o con checkbox sulla pagina di login
 * Supporto per blacklists e whitelist di algoritmi di firma e crittografia (Poodle docet)
 
 
@@ -231,6 +231,10 @@ strategie di migrazione
 * Installare il sistema operativo da zero (Debian/Ubuntu/...)
 * Installare* il nuovo Shibboleth (fresh install)
 * Portare i file di configurazione nella nuova directory *conf* avendo cura di non sovrascrivere quelli di default.
+* Vanno portati così come sono:
+    * idp-metadata.xml
+    * idp.crt (che va nella nuova dir credentials)
+    * idp.key (che va nella nuova dir credentials)
 
 
 ---
@@ -257,11 +261,29 @@ strategie di migrazione
 
 ---
 
+## Drogare il file degli host
+
+* /etc/hosts
+* C:\Windows\System32\drivers\etc
+
+Formato:
+
+IP address sviluppo | FQDN produzione 
+--------------------|-----------------
+140.105.48.152 | idp.units.it
+
+
+---
+
 ## Installazione e configurazione
 
 HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Jetty9
 
-https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity Provider/
+
+https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Ubuntu%20Linux%20LTS%2016.04%20with%20Apache2%20%2B%20Jetty9.md
+
+---
+
 
 
 ---
@@ -282,11 +304,15 @@ come si presentano le configurazioni
 
 * Pratiche di federazione
  * ??Supporto per blacklists e whitelist di algoritmi di firma e crittografia (Poodle docet)
- * AFP da resource registry
- * AFP CoCo
+ * AFP IDEM
+ * AFP IDEM only if required
+  
+ 
+ * AFP Code of Conduct
  * AFP r+s
  * AFP Idem / onlyIfRequired
  * AFP order e overrides
+ * AFP da resource registry
  * lingua di default in mvc-beans.xml ??
 
 
@@ -306,63 +332,14 @@ come si presentano le configurazioni
 
 +++
 
-<span class="menu-title" style="display: none">edugain</span>
 
-attribute-filter.xml - PolicyRequirementRule
-
-```xml
-<AttributeFilterPolicy>
- <PolicyRequirementRule xsi:type="InEntityGroup"
-      groupID="http://edugain.org/" />
- <AttributeRule attributeID="eduPersonAffiliation">
-  <PermitValueRule xsi:type="OR">
-   <Rule xsi:type="Value" value="faculty" ignoreCase="true" />
-   <Rule xsi:type="Value" value="student" ignoreCase="true" />
-   <Rule xsi:type="Value" value="staff" ignoreCase="true" />
-   <Rule xsi:type="Value" value="alum" ignoreCase="true" />
-   <Rule xsi:type="Value" value="member" ignoreCase="true" />
-   <Rule xsi:type="Value" value="affiliate" ignoreCase="true" />
-   <Rule xsi:type="Value" value="employee" ignoreCase="true" />
-   <Rule xsi:type="Value" value="library-walk-in" ignoreCase="true" />
-  </PermitValueRule>
- </AttributeRule>
- <AttributeRule attributeID="mail">
-  <PermitValueRule xsi:type="ANY" />
- </AttributeRule>
- <AttributeRule attributeID="commonName">
-  <PermitValueRule xsi:type="ANY" />
- </AttributeRule>
- <AttributeRule attributeID="displayName">
-  <PermitValueRule xsi:type="ANY" />
- </AttributeRule>
- <AttributeRule attributeID="schacHomeOrganization">
-  <PermitValueRule xsi:type="ANY" />
- </AttributeRule>
- <AttributeRule attributeID="schacHomeOrganizationType">
-  <PermitValueRule xsi:type="ANY" />
- </AttributeRule>
- <AttributeRule attributeID="eduPersonPrincipalName">
-  <PermitValueRule xsi:type="ANY" />
- </AttributeRule>
-</AttributeFilterPolicy>
-
-```
-<span class="code-presenting-annotation fragment current-only" data-code-focus="2">Conditional filter</span>
-<span class="code-presenting-annotation fragment current-only" data-code-focus="2-3">Conditional filter</span>
-<span class="code-presenting-annotation fragment current-only" data-code-focus="1-18"></span>
-<span class="code-presenting-annotation fragment current-only" data-code-focus="15-30"></span>
-
-+++
-
-<span class="menu-title" style="display: none">IDEM</span>
-
-attribute-filter.xml - PolicyRequirementRule
+attribute-filter.xml - IDEM
 
 ```xml
 <!-- Rule for IDEM SPs -->
 <AttributeFilterPolicy id="releaseToIDEM">
  <PolicyRequirementRule xsi:type="RegistrationAuthority"
-      registrars="http://www.idem.garr.it/"/>
+   registrars="http://www.idem.garr.it/"/>
 
  <!-- Attributes defined by "Specifiche Tecniche per la Compilazione e l'uso degli Attr
 ibuti" version 2012 + modifiche -->
@@ -375,13 +352,127 @@ ibuti" version 2012 + modifiche -->
  <AttributeRule attributeID="givenName">
   <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
  </AttributeRule>
-[...]
+ <AttributeRule attributeID="commonName">
+  <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+ </AttributeRule>
+ <AttributeRule attributeID="preferredLanguage">
+  <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+ </AttributeRule>
+ <AttributeRule attributeID="schacMotherTongue">
+  <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+ </AttributeRule>
+ <AttributeRule attributeID="title">
+  <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+ </AttributeRule>
+ <AttributeRule attributeID="schacPersonalTitle">
+  <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+ </AttributeRule>
+ <AttributeRule attributeID="schacPersonalPosition">
+  <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+ </AttributeRule>
+ <AttributeRule attributeID="email">
+  <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+ </AttributeRule>
+ <AttributeRule attributeID="telephoneNumber">
+  <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+ </AttributeRule>
+ <AttributeRule attributeID="facsimileTelephoneNumber">
+  <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+ </AttributeRule>
+ <AttributeRule attributeID="mobile">
+  <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+ </AttributeRule>
+ <AttributeRule attributeID="schacUserPresenceID">
+  <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+ </AttributeRule>
+ <AttributeRule attributeID="eduPersonOrgDN">
+  <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+ </AttributeRule>
+ <AttributeRule attributeID="eduPersonOrgUnitDN">
+  <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+ </AttributeRule>
+ <AttributeRule attributeID="eduPersonScopedAffiliation">
+  <PermitValueRule xsi:type="AND">
+    <Rule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+   <Rule xsi:type="OR">
+    <Rule xsi:type="Value" value="faculty" ignoreCase="true" />
+    <Rule xsi:type="Value" value="student" ignoreCase="true" />
+    <Rule xsi:type="Value" value="staff" ignoreCase="true" />
+    <Rule xsi:type="Value" value="alum" ignoreCase="true" />
+    <Rule xsi:type="Value" value="member" ignoreCase="true" />
+    <Rule xsi:type="Value" value="affiliate" ignoreCase="true" />
+    <Rule xsi:type="Value" value="employee" ignoreCase="true" />
+    <Rule xsi:type="Value" value="library-walk-in" ignoreCase="true" />
+   </Rule>
+  </PermitValueRule>
+  </AttributeRule>
+  <AttributeRule attributeID="eduPersonPrincipalName">
+   <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+  </AttributeRule>
+  <AttributeRule attributeID="eduPersonAffiliation">
+   <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+  </AttributeRule>
+  <AttributeRule attributeID="eduPersonEntitlement">
+   <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+  </AttributeRule>
+
+ </AttributeFilterPolicy>
+
+</AttributeFilterPolicyGroup>
 ```
+<span class="code-presenting-annotation fragment current-only" data-code-focus="3">Condizione per applicare questa AFP è che la Registration Authority...</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="3-4">... deve essere IDEM (verificato sui metadati)</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="1-99"></span>
 
++++
 
+attribute-filter.xml - R&S Entity Category
+
+```xml
+<!-- Attribute Filter Policy Dinamica e compliant
+     con la R&S Entity Category -->
+
+<AttributeFilterPolicy id="releaseDynamicSubsetRandSAttributeBundle">
+
+ <PolicyRequirementRule xsi:type="saml:EntityAttributeExactMatch"
+  attributeName="http://macedir.org/entity-category"
+  attributeValue="http://refeds.org/category/research-and-scholarship"/>
+
+  <!-- Attributi per la Research & Scholarship -->
+  <!-- rilascia ePPN, ePTID, email, displayName,
+     givenName, surname a tutti gli SP R/S -->
+  <AttributeRule attributeID="eduPersonPrincipalName">
+   <PermitValueRule xsi:type="ANY"/>
+  </AttributeRule>
+  <AttributeRule attributeID="eduPersonTargetedID">
+   <PermitValueRule xsi:type="ANY" />
+  </AttributeRule>
+  <!-- l'attributo "email" indica l'attributo "mail" proveniente dalla directory -->
+  <AttributeRule attributeID="email">
+   <PermitValueRule xsi:type="ANY"/>
+  </AttributeRule>
+  <AttributeRule attributeID="displayName">
+   <PermitValueRule xsi:type="ANY" />
+  </AttributeRule>
+  <AttributeRule attributeID="givenName">
+   <PermitValueRule xsi:type="ANY" />
+  </AttributeRule>
+  <AttributeRule attributeID="surname">
+   <PermitValueRule xsi:type="ANY" />
+  </AttributeRule>
+
+  </AttributeFilterPolicy>
+
+</AttributeFilterPolicyGroup>
+```
+<span class="code-presenting-annotation fragment current-only" data-code-focus="6">Questa AFP si applica se l'Entity Attribute ha esattamente...</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="6-8">...questo nome e questo valore (verificato sui metadati dell'SP.)</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="1-99"></span>
 
 
 ---
+
+
 <span class="menu-title" style="display: none">Copyleft</span>
 
 ## Copyleft

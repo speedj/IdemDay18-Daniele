@@ -77,9 +77,9 @@ Daniele Albrizio - albrizio@units.it - IDEM Day 2018
 
 * idp-process.log: Messaggi di warning molto più chiari
 * Condizioni di errore user-facing maggiormente gestite (user experience più confortevole)
-* Interfaccia utente responsive web design (per tutti i dispositivi)
+* Interfaccia utente in responsive web design (per tutti i dispositivi)
  * Interfaccia completamente (e facilmente) internazionalizzabile
- * Testo modificabile runtime (reload automatico)
+ * Testo delle pagine modificabile runtime (reload automatico)
 
 
 ---
@@ -149,12 +149,11 @@ Power Features
 
 ## Extra Power
 * Profili di relying parties basati su gruppi, tag, metadati su cui applicare particolari...
-
-* AFP
-* consent policies
-* algoritmi di crittografia personalizzati
-* configurazioni SLO
-* ecc...
+   * AFP
+   * consent policies
+   * algoritmi di crittografia personalizzati
+   * configurazioni SLO
+   * ecc...
 
 
 ---
@@ -207,36 +206,53 @@ https://wiki.shibboleth.net/confluence/display/IDP30/LogoutConfiguration
 ## Migrazione
 strategie di migrazione
 
+* Solo patch di sicurezza
+...oppure...
+* Usare le nuove potenzialità
+
 
 ---
 
 ## Solo patch di sicurezza
-* Crare una copia della macchina
+* Crare una copia completa della macchina
 * Installare* il nuovo Shibboleth su quello vecchio
 * Far partire il nuovo IdP
 * Drogare il file hosts del/i client usato/i per i test
 * Correggere gli errori guardando il idp-process.log
+* Spegnere l'IdP in produzione
+* Sincronizzare il db del persistentID
+* Accendere il nuovo IdP in produzione
 
 
 ---
 
 
 ## Usare le nuove potenzialità
-* Crare una copia della macchina
+* Installare il sistema operativo da zero (Debian/Ubuntu/...)
 * Installare* il nuovo Shibboleth (fresh install)
-* Portare i file di configurazione nella nuova directory conf avendo cura di non sovrascriere quelli di default
-* io uso le estensioni .orig e .v2 per individuare:
+* Portare i file di configurazione nella nuova directory *conf* avendo cura di non sovrascrivere quelli di default.
+
+
+---
+
+
+## Fresh install
+* Io uso le estensioni .orig e .v2 per individuare:
    * v2: il file funzionante nel vecchio IdP
    * orig: i file originali della distribuzione di cui esiste una copia modificata in produzione
 
 
 ---
-## Usare le nuove potenzialità
 
 
+## Fresh install
 * Far partire il nuovo IdP
 * Drogare il file hosts del/i client usato/i per i test
 * Correggere gli errori guardando il idp-process.log
+* Una volta che tutto funziona, implementare le nuove funzionalità una alla volta
+* Spegnere l'IdP in produzione
+* Sincronizzare il db del persistentID
+* Accendere il nuovo IdP in produzione
 
 
 ---
@@ -245,7 +261,7 @@ strategie di migrazione
 
 HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Jetty9
 
-https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/
+https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity Provider/
 
 
 ---

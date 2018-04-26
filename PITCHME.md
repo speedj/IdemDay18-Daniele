@@ -9,11 +9,12 @@ Daniele Albrizio - albrizio@units.it - IDEM Day 2018
 
 <span class="menu-title" style="display: none">Perché migrare</span>
 ## Perché migrare
-* versione 2 EoL 31.7.2016
-* Cogliere l'occasione per abbandonare SAML1 per SAML2
+* versione 2 > EoL 31.7.2016
+* Cogliere l'occasione per abbandonare SAML1 in favore di SAML2
 * GDPR compliance
 
-+++
+---
+
 
 <span class="menu-title" style="display: none">GDPR</span>
 ## Consenso esplicito
@@ -22,7 +23,7 @@ Daniele Albrizio - albrizio@units.it - IDEM Day 2018
  * Consenso al rilascio degli attributi prima di rilasciarli all'SP insieme al
  * link all'informativa sul trattamento dati dell'SP (se pubblicato nei metdati dell'SP - mdui:PrivacyStatementURL)
 
-+++
+---
 
 ## Consenso esplicito
 * **Scelta** dell'utente **registrata** nel log.
@@ -95,6 +96,7 @@ Daniele Albrizio - albrizio@units.it - IDEM Day 2018
  * filtra i metadati ad esempio per ruolo (tutti gli sp per maggiore performance e impronta in memoria)
 
 
+
 ---
 
 
@@ -147,12 +149,11 @@ Power Features
 
 ## Extra Power
 * Profili di relying parties basati su gruppi, tag, metadati su cui applicare particolari...
-
-* AFP
-* consent policies
-* algoritmi di crittografia personalizzati
-* configurazioni SLO
-* ecc...
+   * AFP
+   * consent policies
+   * algoritmi di crittografia personalizzati
+   * configurazioni SLO
+   * ecc...
 
 
 ---
@@ -197,6 +198,70 @@ https://wiki.shibboleth.net/confluence/display/IDP30/LogoutConfiguration
 * SLO: session tracking lato server e non basta 
  * HTML LocalStorage
  * server-side storage service JPAStorageService o MemcachedStorageService
+
+
+---
+
+
+## Migrazione
+strategie di migrazione
+
+* Solo patch di sicurezza
+...oppure...
+* Usare le nuove potenzialità
+
+
+---
+
+## Solo patch di sicurezza
+* Crare una copia completa della macchina
+* Installare* il nuovo Shibboleth su quello vecchio
+* Far partire il nuovo IdP
+* Drogare il file hosts del/i client usato/i per i test
+* Correggere gli errori guardando il idp-process.log
+* Spegnere l'IdP in produzione
+* Sincronizzare il db del persistentID
+* Accendere il nuovo IdP in produzione
+
+
+---
+
+
+## Usare le nuove potenzialità
+* Installare il sistema operativo da zero (Debian/Ubuntu/...)
+* Installare* il nuovo Shibboleth (fresh install)
+* Portare i file di configurazione nella nuova directory *conf* avendo cura di non sovrascrivere quelli di default.
+
+
+---
+
+
+## Fresh install
+* Io uso le estensioni .orig e .v2 per individuare:
+   * v2: il file funzionante nel vecchio IdP
+   * orig: i file originali della distribuzione di cui esiste una copia modificata in produzione
+
+
+---
+
+
+## Fresh install
+* Far partire il nuovo IdP
+* Drogare il file hosts del/i client usato/i per i test
+* Correggere gli errori guardando il idp-process.log
+* Una volta che tutto funziona, implementare le nuove funzionalità una alla volta
+* Spegnere l'IdP in produzione
+* Sincronizzare il db del persistentID
+* Accendere il nuovo IdP in produzione
+
+
+---
+
+## Installazione e configurazione
+
+HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Jetty9
+
+https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity Provider/
 
 
 ---

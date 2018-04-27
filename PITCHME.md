@@ -473,6 +473,119 @@ attribute-filter.xml - R&S Entity Category
 ---
 
 
+## Scripted attribute
+
+dove i tipi di attributo built-in non bastano più
+
++++
+
+attribute-resolver.xml - eduPersonEntitlement
+```xml
+<!-- Risoluzione attributo eduPersonEntitlement -->
+<resolver:AttributeDefinition
+ xsi:type="ad:Simple"
+ id="eduPersonEntitlement"
+ sourceAttributeID="epeList">
+  <resolver:Dependency ref="epeList" />
+  <resolver:DisplayName xml:lang="it">Autorizzazioni ulteriori</resolver:DisplayName>
+  <resolver:DisplayName xml:lang="en">Further authorizations</resolver:DisplayName>
+  <resolver:DisplayDescription xml:lang="it">Autorizzazioni ulteriori</resolver:DisplayDescription>
+  <resolver:DisplayDescription xml:lang="en">Further authorizations</resolver:DisplayDescription>
+  <resolver:AttributeEncoder xsi:type="enc:SAML1String" name="urn:mace:dir:attribute-def:eduPersonEntitlement" />
+  <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="urn:oid:1.3.6.1.4.1.5923.1.1.1.7" friendlyName="eduPersonEntitlement" />
+</resolver:AttributeDefinition>
+
+<resolver:AttributeDefinition xsi:type="Script"
+   xmlns="urn:mace:shibboleth:2.0:resolver:ad"
+   id="epeList">
+  <resolver:Dependency ref="myLDAP_AD" />
+  <ScriptFile>/opt/shibboleth-idp/scripts/epeList.js</ScriptFile>
+</resolver:AttributeDefinition>
+```
+<span class="code-presenting-annotation fragment current-only" data-code-focus="2-14">Definizione dell'attributo eduPersonEntitlement</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="5">Indichiamo epeList come attributo sorgente</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="15-22">Attributo sorgente</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="18-19">Referenziazione di uno script esterno con gli attributi del connettore Active Directory</span>
+
++++
+
+scripts/epeList.js
+```js
+// epe per Terena personal TCS per il personale docente e non docente 
+if (dn.contains("ou=personale,dc=ds,dc=units,dc=it")) {
+  epeList.getValues().add("urn:mace:terena.org:tcs:personal-user");
+}
+/* Admins, by sAMAccountName */
+sAMAccountName_value = sAMAccountName.getValues().get(0);
+if (sAMAccountName_value == "555"){
+ epeList.getValues().add("urn:mace:terena.org:tcs:personal-admin");
+}
+```
+<span class="code-presenting-annotation fragment current-only" data-code-focus="1-4">Permetto di generare certificati personali ad una OU</span><span class="code-presenting-annotation fragment current-only" data-code-focus="5-9">all'utente amministratore viene _aggiunto_ l'ePE di amministrazione</span>
+
++++
+
+stessa cosa per EZproxy hosted
+```js
+// epe to administer hosted EZproxy instance
+if (typeof memberOf != "undefined" && memberOf != null ){
+ for ( i = 0; memberOf != null && i < memberOf.getValues().size(); i++ ){
+  value = memberOf.getValues().get(i);
+  // if clause targets AD group name
+  if (value.indexOf("SBA-OCLC-Admins") > 0){
+   epeList.getValues().add("it.units:sba-oclc-admin"); 
+  }
+ }
+}
+```
+
+
+---
+
+
+## Rilasciare l'eduPersonEntitlement...
+...solo a chi se lo merita
+
++++
+
+attribute-filter.xml - PolicyRequirementRule
+
+```xml
+<!-- TERENA Certificate Services TCS certificati personali -->
+<AttributeFilterPolicy id="releaseToTCSpersonal">
+
+ <PolicyRequirementRule xsi:type="AND">
+  <Rule xsi:type="Requester" value="https://www.digicert.com/sso" />
+  <Rule xsi:type="Value" attributeID="eduPersonAffiliation" value="staff"/>
+ </PolicyRequirementRule>
+
+ <AttributeRule attributeID="eduPersonEntitlement">
+  <PermitValueRule xsi:type="ValueRegex" regex="^urn:mace:terena.org:tcs:.*$" />
+ </AttributeRule>
+
+ <AttributeRule attributeID="eduPersonPrincipalName">
+  <PermitValueRule xsi:type="ANY" />
+ </AttributeRule>
+ <AttributeRule attributeID="schacHomeOrganization">
+  <PermitValueRule xsi:type="ANY" />
+ </AttributeRule>
+ <AttributeRule attributeID="displayName">
+  <PermitValueRule xsi:type="ANY" />
+ </AttributeRule>
+ <AttributeRule attributeID="mail">
+  <PermitValueRule xsi:type="ANY" />
+ </AttributeRule>
+</AttributeFilterPolicy>
+```
+
+<span class="code-presenting-annotation fragment current-only" data-code-focus="4-7">quando (richiedente + particolare affiliazione)</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="9-11">cosa (quale/i dei valori di entitlement)</span>
+
+<span class="code-presenting-annotation fragment current-only" data-code-focus="11-99">altri attributi richiesti dal servizio</span>
+
+---
+
+
 <span class="menu-title" style="display: none">Copyleft</span>
 
 ## Copyleft

@@ -282,14 +282,16 @@ HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 wi
 
 https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Ubuntu%20Linux%20LTS%2016.04%20with%20Apache2%20%2B%20Jetty9.md
 
----
 
+UpgradingFromV2
+
+https://wiki.shibboleth.net/confluence/display/IDP30/UpgradingFromV2
 
 
 ---
 
 ## Scorsa sull' XML
-come si presentano le configurazioni
+come si presentano alcune configurazioni
 
 ---
 
@@ -583,8 +585,86 @@ attribute-filter.xml - PolicyRequirementRule
 
 <span class="code-presenting-annotation fragment current-only" data-code-focus="11-99">altri attributi richiesti dal servizio</span>
 
++++
+
+Rilasciamo i valori di eduPersonEntitlement richiesti dal singolo servizio
+
+```xml
+<!-- Release the 'eduPersonEntitlement' attribute with a specific
+ value to Elsevier ScienceDirect SP(identified by its entityID) -->
+<AttributeFilterPolicy id="Elsevier_ScienceDirect">
+ <PolicyRequirementRule xsi:type="Requester" value="https://sdauth.sciencedirect.com/" />
+
+ <AttributeRule attributeID="eduPersonEntitlement">
+  <PermitValueRule xsi:type="Value" value="urn:mace:dir:entitlement:common-lib-terms" ignoreCase="true" />
+ </AttributeRule>
+</AttributeFilterPolicy>
+```
+
+<span class="code-presenting-annotation fragment current-only" data-code-focus="4">Solo a ScienceDirect</span>
+
+<span class="code-presenting-annotation fragment current-only" data-code-focus="6">Per l'attributo eduPersonEntitlement</span>
+
+<span class="code-presenting-annotation fragment current-only" data-code-focus="7">Solo il valore urn:mace:dir:entitlement:common-lib-terms</span>
+
+<span class="code-presenting-annotation fragment current-only" data-code-focus="1-99"></span>
+
+
 ---
 
+
+## Elementi deprecati (FILTER)
+
+esempi:
+Legacy | Current
+-------|-------
+basic:AND	|AND	
+basic:ANY	|ANY
+basic:AttributeScopeString |	Scope	
+basic:AttributeValueRegex	| ValueRegex
+saml:AttributeRequesterInEntityGroup | InEntityGroup
+
+https://wiki.shibboleth.net/confluence/display/IDP30/AttributeFilterLegacyNameSpaceMapping
+
+
+---
+
+## Elementi deprecati (FILTER)
+
+### Namespace deprecati
+
+basic: e saml: 
+
+### Elementi deprecati
+
+- <PolicyRequirementRuleReference>
+- <PermitValueRuleReference>
+- <DenyValueRuleReference>
+
+
+---
+
+
+## Elementi deprecati (RESOLVER)
+
+### Namespace deprecati
+
+- ad:
+- dc: 
+- enc:
+- pc:
+
+### Elementi deprecati
+
+- CryptoTransientId (attribute type)
+- TransientId (attribute type)
+- SAML1StringNameIdentifier (encoder type)
+- SAML2StringNameID (encoder type)
+
+portati tutti nel servizio di NameID Generation
+
+
+---
 
 <span class="menu-title" style="display: none">Copyleft</span>
 

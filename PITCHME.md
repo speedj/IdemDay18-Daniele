@@ -590,24 +590,32 @@ attribute-filter.xml - PolicyRequirementRule
 Rilasciamo i valori di eduPersonEntitlement richiesti dal singolo servizio
 
 ```xml
-<!-- Release the 'eduPersonEntitlement' attribute with a specific
- value to Elsevier ScienceDirect SP(identified by its entityID) -->
+<!-- Release the 'eduPersonEntitlement' attribute with
+ a specific value to Elsevier ScienceDirect SP
+ (identified by its entityID) -->
 <AttributeFilterPolicy id="Elsevier_ScienceDirect">
- <PolicyRequirementRule xsi:type="Requester" value="https://sdauth.sciencedirect.com/" />
+ <PolicyRequirementRule xsi:type="Requester"
+  value="https://sdauth.sciencedirect.com/" />
 
  <AttributeRule attributeID="eduPersonEntitlement">
-  <PermitValueRule xsi:type="Value" value="urn:mace:dir:entitlement:common-lib-terms" ignoreCase="true" />
+  <PermitValueRule xsi:type="Value"
+   value="urn:mace:dir:entitlement:common-lib-terms"
+   ignoreCase="true" />
  </AttributeRule>
 </AttributeFilterPolicy>
 ```
 
-<span class="code-presenting-annotation fragment current-only" data-code-focus="4">Solo a ScienceDirect</span>
+<span class="code-presenting-annotation fragment current-only" 
+data-code-focus="5-6">Solo a ScienceDirect</span>
 
-<span class="code-presenting-annotation fragment current-only" data-code-focus="6">Per l'attributo eduPersonEntitlement</span>
+<span class="code-presenting-annotation fragment current-only" 
+data-code-focus="8">Per l'attributo eduPersonEntitlement</span>
 
-<span class="code-presenting-annotation fragment current-only" data-code-focus="7">Solo il valore urn:mace:dir:entitlement:common-lib-terms</span>
+<span class="code-presenting-annotation fragment current-only" 
+data-code-focus="9-11">Solo il valore urn:mace:dir:entitlement:common-lib-terms</span>
 
-<span class="code-presenting-annotation fragment current-only" data-code-focus="1-99"></span>
+<span class="code-presenting-annotation fragment current-only" 
+data-code-focus="1-99"></span>
 
 
 ---
@@ -616,6 +624,7 @@ Rilasciamo i valori di eduPersonEntitlement richiesti dal singolo servizio
 ## Elementi deprecati (FILTER)
 
 esempi:
+
 Legacy | Current
 -------|-------
 basic:AND	|AND	
@@ -624,29 +633,32 @@ basic:AttributeScopeString |	Scope
 basic:AttributeValueRegex	| ValueRegex
 saml:AttributeRequesterInEntityGroup | InEntityGroup
 
+
+---
+
+## FILTER
+### Namespace deprecati
+
+basic: e saml: 
+
 https://wiki.shibboleth.net/confluence/display/IDP30/AttributeFilterLegacyNameSpaceMapping
 
 
 ---
 
-## Elementi deprecati (FILTER)
 
-### Namespace deprecati
-
-basic: e saml: 
-
+## FILTER
 ### Elementi deprecati
 
-- <PolicyRequirementRuleReference>
-- <PermitValueRuleReference>
-- <DenyValueRuleReference>
+- PolicyRequirementRuleReference
+- PermitValueRuleReference
+- DenyValueRuleReference
 
 
 ---
 
 
-## Elementi deprecati (RESOLVER)
-
+## RESOLVER
 ### Namespace deprecati
 
 - ad:
@@ -654,6 +666,11 @@ basic: e saml:
 - enc:
 - pc:
 
+
+---
+
+
+## RESOLVER
 ### Elementi deprecati
 
 - CryptoTransientId (attribute type)
@@ -663,6 +680,16 @@ basic: e saml:
 
 portati tutti nel servizio di NameID Generation
 
+
+---
+
+## Ringraziamenti
+
+- MARCO MALAVOLTI
+- Francesco Sansone
+- Nunzio Napolitano
+- Davide Vaghetti
+- Barbara Monticini
 
 ---
 

@@ -47,9 +47,9 @@ Daniele Albrizio - albrizio@units.it - IDEM Day 2018
 
 <span class="menu-title" style="display: none">Nuova architettura</span>
 
-## Nova arcihtettura
+## Nova architettura
 
-* Container passa da Tomcat a Jetty
+* Il container passa da Tomcat a Jetty
  * Molto più leggero. Più immediato per chi non ha esperienza di Tomcat.
 * OpenJDK
 * Secure cookies client-side
@@ -173,9 +173,9 @@ Power Features
 
 * APIs non backward-compatibili: estensioni personalizzate dovranno molto probabilmente essere aggiornate per funzionare con la versione 3 (scripted attribute e webflow)
 
-* Attribute Filtering: L'attributo ID è ora obbligatorio per tutte le policy (era opzionale)
+* Attribute Filtering: L'ID dell'attributo è ora obbligatorio per tutte le policy (era opzionale)
 
-* Molte funzionalita' disabilitate di default in caso di upgrade (consent, ecc...)
+* Molte funzionalita' disabilitate di default in caso di upgrade (consent, NameID generation, ecc...)
 
 
 ---
@@ -185,7 +185,7 @@ Power Features
 
 * Terracotta non piu' supportato
 * Sincronizzare le chiavi del keystore per i secure coockies
-* db (NameID:persistent) su un cluster esterno
+* db (NameID:persistent/ePTID) su un cluster esterno
 * memcached consigliato in caso di Single Logout
 
 
@@ -253,7 +253,7 @@ strategie di migrazione
 * Far partire il nuovo IdP
 * Drogare il file hosts del/i client usato/i per i test
 * Correggere gli errori guardando il idp-process.log
-* Una volta che tutto funziona, implementare le nuove funzionalità una alla volta
+* Una volta che tutto funziona, implementare le nuove funzionalità, una alla volta
 * Spegnere l'IdP in produzione
 * Sincronizzare il db del persistentID
 * Accendere il nuovo IdP in produzione
@@ -271,7 +271,8 @@ Formato:
 IP address sviluppo | FQDN produzione 
 --------------------|-----------------
 140.105.48.152 | idp.units.it
-
+.
+* Usare la finestra "incognito" del browser
 
 ---
 
@@ -295,10 +296,36 @@ come si presentano alcune configurazioni
 
 ---
 
+## saml2:NameID persistent generation and storage
+
+* Distribuito su 3 file
+ - saml-nameid.properties
+ - saml-nameid.xml
+ - c14n/subject-c14n.xml
+* Prendere nota di come lo si generava finora
+ - algoritmo di crittografia
+ - composizione dell'attributo
+ - salt
+
+
+---
+
 
 * Tricks
  * Backend multipli ldap
  * filtro epEntitlement a seconda del requestor
+
+
+---
+
+
+### Authenticare utenti da diversi LDAP
+
+https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20to%20authenticate%20Users%20existing%20on%20different%20LDAP%20Servers.md
+
+### Autenticare da un Active Directory su 4 OU diverse
+
+https://wiki.shibboleth.net/confluence/display/IDP30/Authenticating+against+multiple+OU%27s
 
 
 ---

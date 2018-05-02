@@ -272,7 +272,7 @@ IP address sviluppo | FQDN produzione
 --------------------|-----------------
 140.105.48.152 | idp.units.it
 .
-* Usare la finestra "incognito" del browser
+* Usare la finestra "incognito" del browser / ripulire i cookies
 
 ---
 
@@ -291,11 +291,6 @@ https://wiki.shibboleth.net/confluence/display/IDP30/UpgradingFromV2
 
 ---
 
-## Scorsa sull' XML
-come si presentano alcune configurazioni
-
----
-
 ## saml2:NameID persistent generation and storage
 
 * Distribuito su 3 file
@@ -311,9 +306,77 @@ come si presentano alcune configurazioni
 ---
 
 
-* Tricks
- * Backend multipli ldap
- * filtro epEntitlement a seconda del requestor
+## Elementi deprecati (FILTER)
+
+esempi:
+
+Legacy | Current
+-------|-------
+basic:AND	|AND	
+basic:ANY	|ANY
+basic:AttributeScopeString |	Scope	
+basic:AttributeValueRegex	| ValueRegex
+saml:AttributeRequesterInEntityGroup | InEntityGroup
+
+
+---
+
+## FILTER
+### Namespace deprecati
+
+basic: e saml: 
+
+https://wiki.shibboleth.net/confluence/display/IDP30/AttributeFilterLegacyNameSpaceMapping
+
+
+---
+
+
+## FILTER
+### Elementi deprecati
+
+- PolicyRequirementRuleReference
+- PermitValueRuleReference
+- DenyValueRuleReference
+
+
+---
+
+
+## RESOLVER
+### Namespace deprecati
+
+- ad:
+- dc: 
+- enc:
+- pc:
+
+
+---
+
+
+## RESOLVER
+### Elementi deprecati
+
+- CryptoTransientId (attribute type)
+- TransientId (attribute type)
+- SAML1StringNameIdentifier (encoder type)
+- SAML2StringNameID (encoder type)
+
+portati tutti nel servizio di NameID Generation
+
+
+---
+
+
+## WHAT'S NEXT
+## Scorsa sull' XML
+come si presentano alcune configurazioni
+
+   * Backend multipli ldap
+   * AD con OU multiple
+   * filtro epEntitlement a seconda del requestor
+   * personalizzazione di un relying party
 
 
 ---
@@ -349,7 +412,6 @@ https://wiki.shibboleth.net/confluence/display/IDP30/Authenticating+against+mult
 
 
 * Run e aggiustamenti successivi della configurazione secondo i warning molto esaustivi dell'idp-process.log
-
 
 
 ---
@@ -647,68 +709,142 @@ data-code-focus="1-99"></span>
 
 ---
 
+## Personalizzare un relying party
+SAP Cloud Platform
 
-## Elementi deprecati (FILTER)
+*Courtesy Marco Pirovano*
 
-esempi:
++++
 
-Legacy | Current
--------|-------
-basic:AND	|AND	
-basic:ANY	|ANY
-basic:AttributeScopeString |	Scope	
-basic:AttributeValueRegex	| ValueRegex
-saml:AttributeRequesterInEntityGroup | InEntityGroup
+relying-party.xml
 
+```xml 
+<!-- SAP Cloud Platform - Relying Party Configuration -->
+<!-- Shib2 -->
+
+<rp:RelyingParty id="https://production.bocconi.ondemand.com/a287d8c16"
+provider="https://idp.unibocconi-prod.it/idp/shibboleth"
+defaultSigningCredentialRef="IdPCredential">
+
+ <rp:ProfileConfiguration xsi:type="saml:ShibbolethSSOProfile"
+ includeAttributeStatement="false"
+ assertionLifetime="PT5M"
+ signResponses="always"
+ signAssertions="always"/>
+
+ <rp:ProfileConfiguration xsi:type="saml:SAML1AttributeQueryProfile"
+ assertionLifetime="PT5M"
+ signResponses="always"
+ signAssertions="always"/>
+
+ <rp:ProfileConfiguration xsi:type="saml:SAML1ArtifactResolutionProfile"
+ signResponses="always"
+ signAssertions="always"/>
+
+ <rp:ProfileConfiguration xsi:type="saml:SAML2SSOProfile"
+ includeAttributeStatement="true"
+ assertionLifetime="PT5M"
+ assertionProxyCount="0"
+ signResponses="always"
+ signAssertions="always"
+ encryptAssertions="never"
+ encryptNameIds="never"/>
+
+ <rp:ProfileConfiguration xsi:type="saml:SAML2ECPProfile" 
+ includeAttributeStatement="true"
+ assertionLifetime="PT5M"
+ assertionProxyCount="0"
+ signResponses="always"
+ signAssertions="always"
+ encryptAssertions="never"
+ encryptNameIds="never"/>
+
+ <rp:ProfileConfiguration xsi:type="saml:SAML2AttributeQueryProfile"
+ assertionLifetime="PT5M"
+ assertionProxyCount="0"
+ signResponses="always"
+ signAssertions="always"
+ encryptAssertions="never"
+ encryptNameIds="never"/>
+
+ <rp:ProfileConfiguration xsi:type="saml:SAML2ArtifactResolutionProfile"
+ signResponses="always"
+ signAssertions="always"
+ encryptAssertions="never"
+ encryptNameIds="never"/>
+
+</rp:RelyingParty>
+```
+
++++
+
+## Errori (chiari) al reload del servizio
+
+org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: **Line
+235** in XML document from file [**/opt/shibboleth-idp/conf/metadata-providers.xml**]
+is invalid; nested exception is org.xml.sax.SAXParseException; lineNumber: 235;
+**columnNumber: 62**; **The prefix "rp" for element "rp:RelyingParty" is not bound.**
+
++++
+
+org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: **Line
+235** in XML document from file [**/opt/shibboleth-idp/conf/metadata-providers.xml**]
+is invalid; nested exception is org.xml.sax.SAXParseException; lineNumber: 235;
+**columnNumber: 62**; cvc-complex-type.2.4.a: **Invalid content was found starting
+with element 'RelyingParty'. One of '{"urn:mace:shibboleth:2.0:metadata":
+MetadataProvider}' is expected.**
+
++++
+
+```xml
+<!-- SAP Cloud Platform - Relying Party Configuration -->
+<!-- Shib3 -->
+<bean parent="RelyingPartyByName" c:relyingPartyIds="https://production.bocconi.ondemand.com/a287d8c16">
+  <property name="profileConfigurations">
+    <list>
+      <bean parent="Shibboleth.SSO"
+       p:assertionLifetime="PT5M"
+       p:signResponses="true"
+       p:signAssertions="true"  />
+      <bean parent="SAML1.AttributeQuery"
+       p:assertionLifetime="PT5M"
+       p:signResponses="true"
+       p:signAssertions="true" />
+      <bean parent="SAML1.ArtifactResolution"
+       p:signResponses="true"
+       p:signAssertions="true" />
+      <bean parent="SAML2.SSO"
+       p:includeAttributeStatement="true"
+       p:assertionLifetime="PT5M"
+       p:signResponses="true"
+       p:signAssertions="true"
+       p:encryptAssertions="false"
+       p:encryptNameIDs="false" />
+      <bean parent="SAML2.ECP"
+       p:includeAttributeStatement="true"
+       p:assertionLifetime="PT5M"
+       p:signResponses="true"
+       p:signAssertions="true"
+       p:encryptAssertions="false"
+       p:encryptNameIDs="false" />
+      <bean parent="SAML2.AttributeQuery"
+       p:assertionLifetime="PT5M"
+       p:signResponses="true"
+       p:signAssertions="true"
+       p:encryptAssertions="false"
+       p:encryptNameIDs="false" />
+      <bean parent="SAML2.ArtifactResolution"
+      p:signResponses="true"
+      p:signAssertions="true"
+      p:encryptAssertions="false"
+      p:encryptNameIDs="false" />
+    </list>
+  </property>
+</bean>
+```
 
 ---
 
-## FILTER
-### Namespace deprecati
-
-basic: e saml: 
-
-https://wiki.shibboleth.net/confluence/display/IDP30/AttributeFilterLegacyNameSpaceMapping
-
-
----
-
-
-## FILTER
-### Elementi deprecati
-
-- PolicyRequirementRuleReference
-- PermitValueRuleReference
-- DenyValueRuleReference
-
-
----
-
-
-## RESOLVER
-### Namespace deprecati
-
-- ad:
-- dc: 
-- enc:
-- pc:
-
-
----
-
-
-## RESOLVER
-### Elementi deprecati
-
-- CryptoTransientId (attribute type)
-- TransientId (attribute type)
-- SAML1StringNameIdentifier (encoder type)
-- SAML2StringNameID (encoder type)
-
-portati tutti nel servizio di NameID Generation
-
-
----
 
 ## Ringraziamenti
 

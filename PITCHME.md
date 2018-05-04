@@ -1,9 +1,19 @@
 <span class="menu-title" style="display: none">Introduction</span>
 ## Migrazione da IdP v2 a v3
 ##### <span style="font-family:Helvetica Neue; font-weight:bold">Aggiornamento IdP e nuovi standard</span>
-Daniele Albrizio - albrizio@units.it - IDEM Day 2018
+ Daniele Albrizio - albrizio@units.it
+
+ IDEM Day 2018 - Roma ISTAT
 
  
+---
+
+
+![Image](./images/bit.ly_2juhOmU.svg)
+
+https://bit.ly/2juhOmU
+
+
 ---
 
 
@@ -26,20 +36,21 @@ Daniele Albrizio - albrizio@units.it - IDEM Day 2018
 ---
 
 ## Consenso esplicito
-* **Scelta** dell'utente **registrata** nel log.
+* **Scelta** dell'utente **registrata** nel log idp-consent-audit.log.
+'20180502T200018Z|https://sdauth.sciencedirect.com/|TermsAccepted|principal|my-tou-1.5||true'
 * I consensi specifici restano in un **coockie sicuro** sul browser (a scadenza programmabile lato IdP).
 * **Al cambiare** del testo nel ToU (hash) o del set di attributi da rilasciare, può essere *ripresentata la pagina di consenso automaticamente*.
 
 ---
 
 
-![Image](./assets/md/assets/IdPlogin.png)
+![Image](./images/IdPlogin.png)
 +++
-![Image](./assets/md/assets/ToU.png)
+![Image](./images/ToU.png)
 +++
-![Image](./assets/md/assets/attributeConsent.png)
+![Image](./images/attributeConsent.png)
 +++
-![Image](./assets/md/assets/attributeConsent1.png)
+![Image](./images/attributeConsent1.png)
 
 
 ---
@@ -49,7 +60,7 @@ Daniele Albrizio - albrizio@units.it - IDEM Day 2018
 
 ## Nova architettura
 
-* Il container passa da Tomcat a Jetty
+* Il container di default passa da Tomcat a Jetty
  * Molto più leggero. Più immediato per chi non ha esperienza di Tomcat.
 * OpenJDK
 * Secure cookies client-side
@@ -67,7 +78,7 @@ Daniele Albrizio - albrizio@units.it - IDEM Day 2018
  * ldap backend type distinti fra openldap e AD
 
 * Miglior supporto dei backend database
- * gestione migliore del failover
+ * gestione migliore del DB failover
 
 
 ---
@@ -854,13 +865,29 @@ MetadataProvider}' is expected.**
 - Davide Vaghetti
 - Barbara Monticini
 
+
 ---
+
+## Contributi alla community
+
+- Shibboleth
+   - Marco Pirovano - unibocconi
+   - Davide Bottalico - unina
+   - Leonardo Mariani - iit cnr
+   - Simone Lanzarini - cineca
+- SimpleSAMLphp
+   - Matteo Carangelo - iulm
+   - Enrico M.V. Fasanelli - infn lecce
+
+
+---
+
 
 <span class="menu-title" style="display: none">Copyleft</span>
 
 ## Copyleft
 
-![Image](./assets/md/assets/CC-BY-NC-SA.png)
+![Image](./images/CC-BY-NC-SA.png)
 
 <span style="font-size:0.6em; color:gray">
 Quest'opera è stata rilasciata con licenza Creative Commons Attribuzione - Non

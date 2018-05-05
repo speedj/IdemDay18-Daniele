@@ -1086,7 +1086,7 @@ attribute-resolver.xml
       <ad:SourceValue>4\s.+</ad:SourceValue> <!-- borsisti -->
       <ad:SourceValue>8\s.+</ad:SourceValue> <!-- Collaboratori con assegno di ricerca -->
     </ad:ValueMap>
-
+    
 </resolver:AttributeDefinition>
 ```
 
@@ -1107,13 +1107,13 @@ attribute-resolver.xml
 ## Contributi alla community
 
 - Shibboleth
-   - Davide Bottalico - unina
-   - Leonardo Mariani e Loredana Martusciello - iit cnr
    - Marco Pirovano - unibocconi
+   - Davide Bottalico - unina
+   - Leonardo Mariani - iit cnr
    - Simone Lanzarini - cineca
 - SimpleSAMLphp (che pubblicheremo)
-   - Enrico M.V. Fasanelli - infn lecce
    - Matteo Carangelo - iulm
+   - Enrico M.V. Fasanelli - infn lecce
 
 
 ---

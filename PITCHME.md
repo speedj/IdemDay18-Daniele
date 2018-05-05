@@ -20,7 +20,7 @@ https://bit.ly/2juhOmU
 ## Perché migrare
 * versione 2 > EoL 31.7.2016
 * Cogliere l'occasione per abbandonare SAML1 in favore di SAML2
-* GDPR compliance
+* GDPR compliance (strumenti per la)
 
 
 ---
@@ -28,15 +28,15 @@ https://bit.ly/2juhOmU
 
 ## Consenso esplicito
 * Consent
- * Informativa (ToU) al primo accesso
- * Consenso al rilascio degli attributi prima di rilasciarli all'SP insieme al
+ * Informativa (ToU) al primo accesso (con versioning)
+ * Consenso al rilascio degli attributi prima di rilasciarli all'SP insieme al...
  * link all'informativa sul trattamento dati dell'SP (se pubblicato nei metdati dell'SP - mdui:PrivacyStatementURL)
 
 ---
 
 ## Consenso esplicito
-* **Scelta** dell'utente **registrata** nel log idp-consent-audit.log.
-'20180502T200018Z|https://sdauth.sciencedirect.com/|TermsAccepted|principal|my-tou-1.5||true'
+* Accettazione dei ToU **registrata** nel log idp-consent-audit.log.
+  * '20180502T200018Z|https://sdauth.sciencedirect.com/ |TermsAccepted|*principal* |my-tou-1.5||true'
 * I consensi specifici restano in un **coockie sicuro** sul browser (a scadenza programmabile lato IdP).
 * **Al cambiare** del testo nel ToU (hash) o del set di attributi da rilasciare, può essere *ripresentata la pagina di consenso automaticamente*.
 
@@ -48,6 +48,27 @@ https://bit.ly/2juhOmU
 ![Screenshot of Terms of Use page](./images/ToU.png)
 +++
 ![Screenshot of a Consent attribute list and approval](./images/attributeConsent.png)
++++
+attribute-resolver.xml
+```xml
+<!-- CODICE FISCALE ITALIA -->
+<resolver:AttributeDefinition xsi:type="ad:Simple"
+xmlns="urn:mace:shibboleth:2.0:resolver:ad"
+id="schacPersonalUniqueID" sourceAttributeID="schacCF">
+    <resolver:Dependency ref="schacCF" />
+    <resolver:DisplayName xml:lang="it">Codice Fiscale</resolver:DisplayName>
+    <resolver:DisplayName xml:lang="en">Tax Code</resolver:DisplayName>
+    <resolver:DisplayDescription xml:lang="it">Codice Fiscale</resolver:DisplayDescription>
+    <resolver:DisplayDescription xml:lang="en">Tax Code</resolver:DisplayDescription>
+    <resolver:AttributeEncoder xsi:type="enc:SAML2String" 
+    name="urn:oid:1.3.6.1.4.1.25178.1.2.15"
+    friendlyName="schacPersonalUniqueID" />
+</resolver:AttributeDefinition>
+
+```
+<span class="code-presenting-annotation fragment current-only" data-code-focus="6-7">Descrizione utente in varie lingue</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="6-7,11-12">In realtà l'attributo è schacPersonalUniqueID</span>
+
 +++
 ![Screenshot of attribute release consent](./images/attributeConsent1.png)
 
@@ -82,11 +103,11 @@ https://bit.ly/2juhOmU
 
 ## Fringe benefits
 
-* idp-process.log: Messaggi di warning molto più chiari
-* Condizioni di errore user-facing maggiormente gestite (user experience più confortevole)
-* Interfaccia utente in responsive web design (per tutti i dispositivi)
+* idp-process.log: Messaggi di warning molto più chiari per l'**amministratore**
+* Condizioni di errore **user-facing** maggiormente gestite (user experience più confortevole)
+* Interfaccia utente in **responsive** web design (per tutti i dispositivi)
  * Interfaccia completamente (e facilmente) internazionalizzabile
- * Testo delle pagine modificabile runtime (reload automatico)
+ * Testo delle pagine modificabile runtime (reload automatico temporizzato)
 
 
 ---
@@ -99,8 +120,8 @@ https://bit.ly/2juhOmU
  * Carica metadati via web e li tiene in memoria anche dopo il riavvio
 
 * EntityRoleWhiteListFilter
+ * carica solo i metadati filtrati, ad esempio, per ruolo (e.g. tutti e soli gli SP {esclude gli IdP} per maggiore performance e minore impronta in memoria)
  * https://wiki.shibboleth.net/confluence/display/IDP30/EntityRoleWhiteListFilter
- * filtra i metadati ad esempio per ruolo (tutti gli sp per maggiore performance e impronta in memoria)
 
 
 
@@ -129,16 +150,6 @@ https://bit.ly/2juhOmU
  * Recovery da situazioni di I/O failure
 
 * Supporto nativo CAS
-
-
----
-
-
-## !!!!!!!!!!!!!! dire o no?
-## Fringe benefits
-
-* GCM encryption per gli SP che la supportano
-* Supporto per client ECP (non-browser)
 
 
 ---

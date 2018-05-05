@@ -55,7 +55,6 @@ In attesa di valutare tutti i problemi che puo' causare l'eliminazione della reg
 
 ```xml
 <ref bean="IDEM-Default-Filter"/>
-<ref bean="IDEM-Default-Filter"/>
 <value>%{idp.home}/conf/attribute-filter-v3-required.xml</value>
 <ref bean="FileBacked_RR_Garr_ARP"/>
 <ref bean="ResearchAndScholarship"/>
@@ -69,9 +68,12 @@ Dove:
 
 ![Image](./RR1.png)
 
+In particolare *eduPersonEntitlement* va impostato a `non configurato`.
+
 ![Image](./RR2.png)
 
-* in *attribute-filter.xml*  vi sono tutte le configurazioni di *eduPersonEntitlement* per risorse non federate o di tutte le risorse nel caso si preferisce mantenere le eccezioni invece di usare il Resource registry. Esempio:
+
+* in *attribute-filter.xml*  vi sono tutte le configurazioni di *eduPersonEntitlement* per risorse **non federate** o di tutte le risorse nel caso si preferisca mantenere qui le eccezioni invece di usare il Resource registry. Esempio:
 
 ```xml
 <!-- COMMON-LIB-TERMS per Elsevier (Ebsco Scopus ScienceDirect) -->

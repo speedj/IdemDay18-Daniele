@@ -9,7 +9,7 @@
 ---
 
 
-![Image](./images/bit.ly_2juhOmU.svg)
+![Image of a QRcode](./images/bit.ly_2juhOmU.svg)
 
 https://bit.ly/2juhOmU
 
@@ -17,16 +17,15 @@ https://bit.ly/2juhOmU
 ---
 
 
-<span class="menu-title" style="display: none">Perché migrare</span>
 ## Perché migrare
 * versione 2 > EoL 31.7.2016
 * Cogliere l'occasione per abbandonare SAML1 in favore di SAML2
 * GDPR compliance
 
+
 ---
 
 
-<span class="menu-title" style="display: none">GDPR</span>
 ## Consenso esplicito
 * Consent
  * Informativa (ToU) al primo accesso
@@ -44,19 +43,17 @@ https://bit.ly/2juhOmU
 ---
 
 
-![Image](./images/IdPlogin.png)
+![Screenshot of a login page](./images/IdPlogin.png)
 +++
-![Image](./images/ToU.png)
+![Screenshot of Terms of Use page](./images/ToU.png)
 +++
-![Image](./images/attributeConsent.png)
+![Screenshot of a Consent attribute list and approval](./images/attributeConsent.png)
 +++
-![Image](./images/attributeConsent1.png)
+![Screenshot of attribute release consent](./images/attributeConsent1.png)
 
 
 ---
 
-
-<span class="menu-title" style="display: none">Nuova architettura</span>
 
 ## Nova architettura
 
@@ -69,7 +66,6 @@ https://bit.ly/2juhOmU
 
 ---
 
-<span class="menu-title" style="display: none">Fringe benefits</span>
 
 ## Fringe benefits
 
@@ -138,7 +134,7 @@ https://bit.ly/2juhOmU
 ---
 
 
-## dire o no?
+## !!!!!!!!!!!!!! dire o no?
 ## Fringe benefits
 
 * GCM encryption per gli SP che la supportano
@@ -147,8 +143,6 @@ https://bit.ly/2juhOmU
 
 ---
 
-
-<span class="menu-title" style="display: none">Extra Power</span>
 
 ## Extra Power
 
@@ -376,12 +370,25 @@ portati tutti nel servizio di NameID Generation
 
 ---
 
-## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Aggiungere errori!!!!!!!!!!!!!!!!!!!!!!!!!!
+## E' tutto a posto?
 
-* Run e aggiustamenti successivi della configurazione secondo i warning molto esaustivi dell'idp-process.log
+* Run e aggiustamenti successivi della configurazione secondo i warning molto esaustivi dell'idp-process.log. Ad esempio 
+
+```markdown
+org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: 
+Line 235 in XML document from file /opt/shibboleth-idp/conf/metadata-providers.xml]
+is invalid; nested exception is org.xml.sax.SAXParseException;
+lineNumber: 235; columnNumber: 62; cvc-complex-type.2.4.a:
+Invalid content was found starting with element 'RelyingParty'.
+One of '{"urn:mace:shibboleth:2.0:metadata":MetadataProvider}' is expected.
+```
+<span class="code-presenting-annotation fragment current-only" data-code-focus="2">Indicazione del file interessato dal problema</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="4">Riga e colonna dell'errore</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="5">Tipo di errore</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="6">Cosa ci si sarebbe aspettati invece</span>
+
 
 ---
-
 
 
 ## WHAT'S NEXT
@@ -423,7 +430,7 @@ Mappando AuthHandlers, DnResolvers multipli tramite *util:map* e usando 4 DataCo
  * AFP Code of Conduct
  * AFP r+s
  * AFP da resource registry
- 
+ !!!!!!!!!!!!!!!! completare
 * AFP order e overrides
 
 
@@ -729,32 +736,37 @@ SAP Cloud Platform
 
 +++
 
-relying-party.xml
+relying-party.xml v2
 
 ```xml 
 <!-- SAP Cloud Platform - Relying Party Configuration -->
-<!-- Shib2 -->
+<!-- SINTASSI PER Shib2 -->
 
-<rp:RelyingParty id="https://production.bocconi.ondemand.com/a287d8c16"
+<rp:RelyingParty
+id="https://production.bocconi.ondemand.com/a287d8c16"
 provider="https://idp.unibocconi-prod.it/idp/shibboleth"
 defaultSigningCredentialRef="IdPCredential">
 
- <rp:ProfileConfiguration xsi:type="saml:ShibbolethSSOProfile"
+ <rp:ProfileConfiguration
+ xsi:type="saml:ShibbolethSSOProfile"
  includeAttributeStatement="false"
  assertionLifetime="PT5M"
  signResponses="always"
  signAssertions="always"/>
 
- <rp:ProfileConfiguration xsi:type="saml:SAML1AttributeQueryProfile"
+ <rp:ProfileConfiguration
+ xsi:type="saml:SAML1AttributeQueryProfile"
  assertionLifetime="PT5M"
  signResponses="always"
  signAssertions="always"/>
 
- <rp:ProfileConfiguration xsi:type="saml:SAML1ArtifactResolutionProfile"
+ <rp:ProfileConfiguration
+ xsi:type="saml:SAML1ArtifactResolutionProfile"
  signResponses="always"
  signAssertions="always"/>
 
- <rp:ProfileConfiguration xsi:type="saml:SAML2SSOProfile"
+ <rp:ProfileConfiguration
+ xsi:type="saml:SAML2SSOProfile"
  includeAttributeStatement="true"
  assertionLifetime="PT5M"
  assertionProxyCount="0"
@@ -763,7 +775,8 @@ defaultSigningCredentialRef="IdPCredential">
  encryptAssertions="never"
  encryptNameIds="never"/>
 
- <rp:ProfileConfiguration xsi:type="saml:SAML2ECPProfile" 
+ <rp:ProfileConfiguration
+ xsi:type="saml:SAML2ECPProfile" 
  includeAttributeStatement="true"
  assertionLifetime="PT5M"
  assertionProxyCount="0"
@@ -772,7 +785,8 @@ defaultSigningCredentialRef="IdPCredential">
  encryptAssertions="never"
  encryptNameIds="never"/>
 
- <rp:ProfileConfiguration xsi:type="saml:SAML2AttributeQueryProfile"
+ <rp:ProfileConfiguration
+ xsi:type="saml:SAML2AttributeQueryProfile"
  assertionLifetime="PT5M"
  assertionProxyCount="0"
  signResponses="always"
@@ -780,7 +794,8 @@ defaultSigningCredentialRef="IdPCredential">
  encryptAssertions="never"
  encryptNameIds="never"/>
 
- <rp:ProfileConfiguration xsi:type="saml:SAML2ArtifactResolutionProfile"
+ <rp:ProfileConfiguration
+ xsi:type="saml:SAML2ArtifactResolutionProfile"
  signResponses="always"
  signAssertions="always"
  encryptAssertions="never"
@@ -793,25 +808,36 @@ defaultSigningCredentialRef="IdPCredential">
 
 ## Errori (chiari) al reload del servizio
 
-org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: **Line
-235** in XML document from file [**/opt/shibboleth-idp/conf/metadata-providers.xml**]
-is invalid; nested exception is org.xml.sax.SAXParseException; lineNumber: 235;
-**columnNumber: 62**; **The prefix "rp" for element "rp:RelyingParty" is not bound.**
+```markdown
+org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException:
+Line 235 in XML document from file
+[/opt/shibboleth-idp/conf/metadata-providers.xml]
+is invalid; nested exception is org.xml.sax.SAXParseException;
+lineNumber: 235; columnNumber: 62; 
+The prefix "rp" for element "rp:RelyingParty" is not bound.
+```
 
 +++
 
-org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: **Line
-235** in XML document from file [**/opt/shibboleth-idp/conf/metadata-providers.xml**]
-is invalid; nested exception is org.xml.sax.SAXParseException; lineNumber: 235;
-**columnNumber: 62**; cvc-complex-type.2.4.a: **Invalid content was found starting
-with element 'RelyingParty'. One of '{"urn:mace:shibboleth:2.0:metadata":
-MetadataProvider}' is expected.**
+```markdown
+org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException:
+Line 235 in XML document from file
+[/opt/shibboleth-idp/conf/metadata-providers.xml]
+is invalid; nested exception is org.xml.sax.SAXParseException;
+lineNumber: 235; columnNumber: 62; cvc-complex-type.2.4.a:
+Invalid content was found starting
+with element 'RelyingParty'.
+One of '{"urn:mace:shibboleth:2.0:metadata":MetadataProvider}'
+is expected.
+```
 
 +++
+
+relying-party.xml v3
 
 ```xml
 <!-- SAP Cloud Platform - Relying Party Configuration -->
-<!-- Shib3 -->
+<!-- SINTASSI PER Shib3 -->
 <bean parent="RelyingPartyByName" c:relyingPartyIds="https://production.bocconi.ondemand.com/a287d8c16">
   <property name="profileConfigurations">
     <list>
@@ -863,37 +889,42 @@ MetadataProvider}' is expected.**
 ---
 
 ## Resilienza al reboot
-credits: Simone Lanzarini
-
-Problema:
-Qualora nel momento del riavvio una delle fonti dati (LDAP e/o DB) referenziate nel resolver non fossero in quel momento raggiungibili (per un guasto o perchè a loro volta in fase di riavvio per l'applicazione delle patch di sicurezza), l'applicazione IDP non partirebbe correttamente, e sarebbe necessario un successivo riavvio MANUALE del servizio una volta ripristinata la disponibilità della fonte dati.
-
-
-Soluzione:
-Aggiungere al DataConnector di tipo xsi:type=LDAPDirectory o xsi:type="RelationalDatabase"
-
-questa property:
-
-validatorRef="shibboleth.NonFailFastValidator" 
-
-----
-
-## Garantire il rilascio degli (altri) attributi se una delle fonti dati non è disponibile
-
-**Background:**
-abbiamo due categorie di utenti, una con i dati su DB, l'altra con i dati su LDAP. Nel resolver gli attributi sono quindi configurati con una doppia Dependency, dal connettore LDAP e da quello DB.
+*credits: Simone Lanzarini*
 
 **Problema:**
-qualora una delle due fonti dati (DB o LDAP) diventi indisponibile, fallisce il reperimento degli attributi anche per gli utenti presenti sull'altra fonte dati.
+- Qualora nel momento del riavvio una delle fonti dati (LDAP e/o DB) referenziate nel resolver non fossero in quel momento raggiungibili, l'IDP non partirebbe correttamente, e sarebbe necessario un successivo riavvio MANUALE del servizio una volta ripristinata la disponibilità della fonte dati.
+
++++
 
 **Soluzione:**
-aggiungere un failover dataconnector
+- Aggiungere al DataConnector di tipo xsi:type=LDAPDirectory o xsi:type="RelationalDatabase" questa property:
+```
+validatorRef="shibboleth.NonFailFastValidator" 
+```
 
-**Problema2: **
-Non è banale attivare dei VERI connettori di failover, e metterne uno con dati fake non è corretto, in quanto in caso di failure verrebbero ritornati attributi fake che non possiamo sapere come vengano trattati lato SP.
+---
+
+## Garantire rilascio attributi se una delle fonti è down
+*credits: Simone Lanzarini*
+
+**Background:**
+- abbiamo due categorie di utenti, una con i dati su DB, l'altra con i dati su LDAP. Nel resolver gli attributi sono quindi configurati con una doppia Dependency: dal connettore LDAP e da quello DB.
+
++++
+
+**Problema:**
+- qualora una delle due fonti dati (DB o LDAP) diventi indisponibile, fallisce il reperimento degli attributi anche per gli utenti presenti sull'altra fonte dati.
 
 **Soluzione:**
-Definire un dataconnector fittizio di tipo static VUOTO ed inserirlo come FailoverDataConnector per TUTTI i DataConnector
+- aggiungere un failover dataconnector
+
++++
+
+**Problema2:**
+- Non è banale attivare dei VERI connettori di failover, e metterne uno con dati fake non è corretto, in quanto in caso di failure verrebbero ritornati attributi fake che non possiamo sapere come vengano trattati lato SP.
+
+**Soluzione:**
+- Definire un dataconnector fittizio di tipo static VUOTO ed inserirlo come FailoverDataConnector per TUTTI i DataConnector
 
 +++
 
@@ -934,19 +965,29 @@ Pubblicheremo alcuni suggerimenti e problemi riscontrati e risolti.
    - Davide Bottalico - unina
    - Leonardo Mariani - iit cnr
    - Simone Lanzarini - cineca
-- SimpleSAMLphp
+- SimpleSAMLphp (che pubblicheremo)
    - Matteo Carangelo - iulm
    - Enrico M.V. Fasanelli - infn lecce
 
 
 ---
 
+# This is the end
+No more slides beyond this point
 
-<span class="menu-title" style="display: none">Copyleft</span>
+<span style="font-size:0.6em; color:gray">
+Ask questions, get some refreshments,
+</span>
+
+<span style="font-size:0.6em; color:gray">
+do phonecalls, check your social networks and chats.
+</span>
+---
+
 
 ## Copyleft
 
-![Image](./images/CC-BY-NC-SA.png)
+![Image of CC-BY-NC-SA](./images/CC-BY-NC-SA.png)
 
 <span style="font-size:0.6em; color:gray">
 Quest'opera è stata rilasciata con licenza Creative Commons Attribuzione - Non
@@ -954,6 +995,7 @@ commerciale - Condividi allo stesso modo 3.0 Italia. Per leggere una copia della
 licenza visita il sito web http://creativecommons.org/licenses/by-nc-sa/3.0/it/ o
 spedisci una lettera a Creative Commons, PO Box 1866, Mountain View, CA 94042,
 USA.</span>
+
 <span style="font-size:0.6em; color:gray">
 Alcune immagini hanno licenze d’uso differenti e sono indicate sulle immagini
 stesse.</span>
@@ -961,13 +1003,9 @@ stesse.</span>
 
 ---
 
-
-<span class="menu-title" style="display: none">Go Fullscreen</span>
-## Tip!
-
-- Use GitHub Flavored Markdown
-For Slide Content Creation
+## Technical
+- See [GitPitch Wiki](https://github.com/gitpitch/gitpitch/wiki/Code-Presenting) for details.
+- Use GitHub Flavored Markdown For Slide Content Creation
 https://guides.github.com/features/mastering-markdown/
 
-See [GitPitch Wiki](https://github.com/gitpitch/gitpitch/wiki/Code-Presenting) for details.
 

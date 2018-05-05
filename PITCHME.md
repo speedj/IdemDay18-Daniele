@@ -75,7 +75,7 @@ https://bit.ly/2juhOmU
 
 * Miglior supporto ldap/AD
  * connection pooling
- * ldap backend type distinti fra openldap e AD
+ * ldap backend type distinti fra openldap e AD (ActiveDirectoryAuthenticationResponseHandler)
 
 * Miglior supporto dei backend database
  * gestione migliore del DB failover
@@ -206,6 +206,7 @@ Power Features
 ## Single Logout
 https://wiki.shibboleth.net/confluence/display/IDP30/LogoutConfiguration
 
+* Supporto allo SLO ***quasi*** maturo
 * SLO: session tracking lato server e non basta 
  * HTML LocalStorage
  * server-side storage service JPAStorageService o MemcachedStorageService
@@ -243,16 +244,16 @@ strategie di migrazione
 * Installare* il nuovo Shibboleth (fresh install)
 * Portare i file di configurazione nella nuova directory *conf* avendo cura di non sovrascrivere quelli di default.
 * Vanno portati così come sono:
-    * idp-metadata.xml
-    * idp.crt (che va nella nuova dir credentials)
-    * idp.key (che va nella nuova dir credentials)
+   * idp-metadata.xml
+   * idp.crt (che va nella nuova dir credentials)
+   * idp.key (che va nella nuova dir credentials)
 
 
 ---
 
 
 ## Fresh install
-* Io uso le estensioni .orig e .v2 per individuare:
+* Personalmente uso le estensioni .orig e .v2 per individuare:
    * v2: il file funzionante nel vecchio IdP
    * orig: i file originali della distribuzione di cui esiste una copia modificata in produzione
 
@@ -282,18 +283,16 @@ Formato:
 IP address sviluppo | FQDN produzione 
 --------------------|-----------------
 140.105.48.152 | idp.units.it
-.
+-----
 * Usare la finestra "incognito" del browser / ripulire i cookies
 
 ---
 
 ## Installazione e configurazione
 
-HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Jetty9
+(*) HOWTO Install and Configure a Shibboleth IdP v3.3.2 on Ubuntu Linux LTS 16.04 with Apache2 + Jetty9
 
-
-https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Ubuntu%20Linux%20LTS%2016.04%20with%20Apache2%20%2B%20Jetty9.md
-
+GitHub https://bit.ly/2rkOP9s
 
 UpgradingFromV2
 
@@ -332,7 +331,7 @@ saml:AttributeRequesterInEntityGroup | InEntityGroup
 
 ---
 
-## FILTER
+## Elementi deprecati (FILTER)
 ### Namespace deprecati
 
 basic: e saml: 
@@ -343,8 +342,7 @@ https://wiki.shibboleth.net/confluence/display/IDP30/AttributeFilterLegacyNameSp
 ---
 
 
-## FILTER
-### Elementi deprecati
+## Elementi deprecati (FILTER)
 
 - PolicyRequirementRuleReference
 - PermitValueRuleReference
@@ -354,7 +352,7 @@ https://wiki.shibboleth.net/confluence/display/IDP30/AttributeFilterLegacyNameSp
 ---
 
 
-## RESOLVER
+## Elementi deprecati (RESOLVER)
 ### Namespace deprecati
 
 - ad:
@@ -366,8 +364,7 @@ https://wiki.shibboleth.net/confluence/display/IDP30/AttributeFilterLegacyNameSp
 ---
 
 
-## RESOLVER
-### Elementi deprecati
+## Elementi deprecati (RESOLVER)
 
 - CryptoTransientId (attribute type)
 - TransientId (attribute type)
@@ -378,6 +375,13 @@ portati tutti nel servizio di NameID Generation
 
 
 ---
+
+## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Aggiungere errori!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+* Run e aggiustamenti successivi della configurazione secondo i warning molto esaustivi dell'idp-process.log
+
+---
+
 
 
 ## WHAT'S NEXT
@@ -397,32 +401,30 @@ come si presentano alcune configurazioni
 
 https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20to%20authenticate%20Users%20existing%20on%20different%20LDAP%20Servers.md
 
+Mappando AuthHandlers, DnResolvers multipli tramite *util:map* e usando 2 DataConnector in failover
+
+
+---
+
+
 ### Autenticare da un Active Directory su 4 OU diverse
 
 https://wiki.shibboleth.net/confluence/display/IDP30/Authenticating+against+multiple+OU%27s
+
+Mappando AuthHandlers, DnResolvers multipli tramite *util:map* e usando 4 DataConnector in failover
 
 
 ---
 
 
 * Pratiche di federazione
- * ??Supporto per blacklists e whitelist di algoritmi di firma e crittografia (Poodle docet)
- * AFP IDEM
- * AFP IDEM only if required
-  
- 
+ * AFP IDEM default
+ * AFP IDEM onlyIfRequired
  * AFP Code of Conduct
  * AFP r+s
- * AFP Idem / onlyIfRequired
- * AFP order e overrides
  * AFP da resource registry
- * lingua di default in mvc-beans.xml ??
-
-
----
-
-
-* Run e aggiustamenti successivi della configurazione secondo i warning molto esaustivi dell'idp-process.log
+ 
+* AFP order e overrides
 
 
 ---
@@ -853,6 +855,63 @@ MetadataProvider}' is expected.**
   </property>
 </bean>
 ```
+
+---
+
+## Casi d'uso avanzati
+
+---
+
+## Resilienza al reboot
+credits: Simone Lanzarini
+
+Problema:
+Qualora nel momento del riavvio una delle fonti dati (LDAP e/o DB) referenziate nel resolver non fossero in quel momento raggiungibili (per un guasto o perchè a loro volta in fase di riavvio per l'applicazione delle patch di sicurezza), l'applicazione IDP non partirebbe correttamente, e sarebbe necessario un successivo riavvio MANUALE del servizio una volta ripristinata la disponibilità della fonte dati.
+
+
+Soluzione:
+Aggiungere al DataConnector di tipo xsi:type=LDAPDirectory o xsi:type="RelationalDatabase"
+
+questa property:
+
+validatorRef="shibboleth.NonFailFastValidator" 
+
+----
+
+## Garantire il rilascio degli (altri) attributi se una delle fonti dati non è disponibile
+
+**Background:**
+abbiamo due categorie di utenti, una con i dati su DB, l'altra con i dati su LDAP. Nel resolver gli attributi sono quindi configurati con una doppia Dependency, dal connettore LDAP e da quello DB.
+
+**Problema:**
+qualora una delle due fonti dati (DB o LDAP) diventi indisponibile, fallisce il reperimento degli attributi anche per gli utenti presenti sull'altra fonte dati.
+
+**Soluzione:**
+aggiungere un failover dataconnector
+
+**Problema2: **
+Non è banale attivare dei VERI connettori di failover, e metterne uno con dati fake non è corretto, in quanto in caso di failure verrebbero ritornati attributi fake che non possiamo sapere come vengano trattati lato SP.
+
+**Soluzione:**
+Definire un dataconnector fittizio di tipo static VUOTO ed inserirlo come FailoverDataConnector per TUTTI i DataConnector
+
++++
+
+```xml
+<!-- Connettore di Failover - serve a consentire
+ il rilascio degli attributi se uno dei connettori e down -->
+<DataConnector id="failoverFakeConnector" xsi:type="Static">
+</DataConnector>
+```
+
+
+---
+
+## Configurazione del global logout
+
+Percorso non lineare, costellato di problemi e malfunzionamenti.
+
+Pubblicheremo alcuni suggerimenti e problemi riscontrati e risolti.
 
 ---
 

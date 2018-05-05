@@ -68,7 +68,7 @@ Dove:
 
 ![Image](./RR1.png)
 
-In particolare *eduPersonEntitlement* va impostato a `non configurato`.
+In particolare *eduPersonEntitlement* va impostato a `non configurato` (anche se poi il registry lo marca come `mai permesso`, di fatto non viene mai messo a deny).
 
 ![Image](./RR2.png)
 

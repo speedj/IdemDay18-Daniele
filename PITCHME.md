@@ -424,19 +424,6 @@ Mappando AuthHandlers, DnResolvers multipli tramite *util:map* e usando 4 DataCo
 ---
 
 
-* Pratiche di federazione
- * AFP IDEM default
- * AFP IDEM onlyIfRequired
- * AFP Code of Conduct
- * AFP r+s
- * AFP da resource registry
- !!!!!!!!!!!!!!!! completare
-* AFP order e overrides
-
-
----
-
-
 ## Filtri condizionali
 
  Tramite l'introduzione di PolicyRequirementRule
@@ -452,8 +439,8 @@ attribute-filter.xml - IDEM
  <PolicyRequirementRule xsi:type="RegistrationAuthority"
    registrars="http://www.idem.garr.it/"/>
 
- <!-- Attributes defined by "Specifiche Tecniche per la Compilazione e l'uso degli Attr
-ibuti" version 2012 + modifiche -->
+ <!-- Attributes defined by "Specifiche Tecniche per la Compilazione
+      e l'uso degli Attributi" version 2012 + modifiche -->
  <AttributeRule attributeID="displayName">
   <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
  </AttributeRule>
@@ -729,6 +716,33 @@ data-code-focus="1-99"></span>
 
 ---
 
+
+## sovrapposizione di più AttributeFilterPolicy
+#### il caso di eduPersonEntitlement
+
+* Buone pratiche di federazione applicano varie policy sugli attributi
+ * AFP IDEM default
+ * AFP IDEM onlyIfRequired
+ * AFP Code of Conduct
+ * AFP r+s
+ * AFP da resource registry
+
+
+---
+
+## sovrapposizione di più AttributeFilterPolicy
+#### il caso di eduPersonEntitlement
+
+E' bene evitare la sovrapposizione di più regole di filtraggio.
+
+Vediamo perché:
+
+https://github.com/speedj/IdemDay18-Daniele/tree/master/eduPersonEntitlement
+
+
+---
+
+
 ## Personalizzare un relying party
 SAP Cloud Platform
 
@@ -982,6 +996,8 @@ Ask questions, get some refreshments,
 <span style="font-size:0.6em; color:gray">
 do phonecalls, check your social networks and chats.
 </span>
+
+
 ---
 
 

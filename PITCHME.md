@@ -9,7 +9,7 @@
 ---
 
 
-![Image of a QRcode](./images/bit.ly_2juhOmU.svg)
+![Image of a QRcode](./images/bit.ly_2juhOmU.png)
 
 https://bit.ly/2juhOmU
 
@@ -1153,11 +1153,11 @@ attribute-resolver.xml
 
 ## Ringraziamenti
 
-- MARCO MALAVOLTI
-- Francesco Sansone
-- Nunzio Napolitano
 - Davide Vaghetti
 - Barbara Monticini
+- Francesco Sansone
+- MARCO MALAVOLTI
+- Nunzio Napolitano
 
 
 ---

@@ -641,6 +641,53 @@ dove i tipi di attributo built-in non bastano più
 
 +++
 
+  - Per scopi autorizzativi ho necessità di popolare un attributo GroupList ad uso degli SP interni non federati per passare i gruppi AD di appartenenza dell'utente.
+
+```xml
+<!-- Attributo per l'appartenenza ai gruppi AD -->
+
+<resolver:AttributeDefinition xsi:type="Script"
+ xmlns="urn:mace:shibboleth:2.0:resolver:ad"
+ id="GroupList">
+  <resolver:Dependency ref="myLDAP_AD" />
+  <ScriptFile>/opt/shibboleth-idp/scripts/populateGroups.js</ScriptFile>
+</resolver:AttributeDefinition>
+
+<resolver:AttributeDefinition xsi:type="ad:Simple"
+ xmlns="urn:mace:shibboleth:2.0:resolver:ad"
+ id="adGroup"
+ sourceAttributeID="GroupList">
+  <resolver:Dependency ref="GroupList" />
+  <resolver:DisplayName xml:lang="en">Active Directory Groups</resolver:DisplayName>
+  <resolver:DisplayName xml:lang="it">Gruppi Active Directory</resolver:DisplayName>
+  <resolver:DisplayDescription xml:lang="en">Active Directory Group membership</resolver:DisplayDescription>
+  <resolver:DisplayDescription xml:lang="it">Lista dei gruppi di appartenenza in Active Directory</resolver:DisplayDescription>
+  <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="urn:mace:dir:attribute-def:adGroup" friendlyName="adGroup" />
+</resolver:AttributeDefinition>
+```
+<span class="code-presenting-annotation fragment current-only" data-code-focus="3-8">Definisco un attributo di tipo Script</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="6">
+passando come dipendenza la fonte dei dati</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="7">e  il path allo script in javascript</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="10-99">Definisco poi l'attributo "esterno" </span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="13-14">referenziando lo script attribute creato in precedenza come attibuto sorgente e dipendenza</span>
+
++++
+
+populateGroups.js
+
+```javascript
+if (typeof memberOf != "undefined" && memberOf != null ){
+  for ( i = 0; memberOf != null && i < memberOf.getValues().size(); i++ ){
+    value = memberOf.getValues().get(i);
+    GroupList.getValues().add(value);
+  }
+}
+```
+
++++
+
+## Scripted attribute
 attribute-resolver.xml - eduPersonEntitlement
 ```xml
 <!-- Risoluzione attributo eduPersonEntitlement -->
@@ -701,6 +748,9 @@ if (typeof memberOf != "undefined" && memberOf != null ){
 }
 ```
 
++++
+
+Riesco a fare le stesse cose usando un attributo di tipo Mapped?
 
 ---
 

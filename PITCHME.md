@@ -30,7 +30,7 @@ https://bit.ly/2juhOmU
 * Consent
  * Informativa (ToU) al primo accesso (con versioning)
  * Consenso al rilascio degli attributi prima di rilasciarli all'SP insieme al...
- * link all'informativa sul trattamento dati dell'SP (se pubblicato nei metdati dell'SP - mdui:PrivacyStatementURL)
+ * ...link all'informativa sul trattamento dati dell'SP (se pubblicato nei metdati dell'SP - mdui:PrivacyStatementURL)
 
 ---
 
@@ -210,7 +210,7 @@ Power Features
 * dipendenze degli attributi (Dependency) in modo da poter fare il merge di attributi con id sorgenti differenti
 * Tipo di autenticazione selezionabile per singolo SP
 * SSO disabilitabile per IP (vedi caso SPID) o con checkbox sulla pagina di login
-* Supporto per blacklists e whitelist di algoritmi di firma e crittografia (Poodle docet)
+* Supporto per blacklist e whitelist di algoritmi di firma e crittografia (Poodle docet)
 
 
 ---
@@ -265,7 +265,7 @@ strategie di migrazione
 ---
 
 ## Solo patch di sicurezza
-* Crare una copia completa della macchina in produzione e operare lì
+* Crare una copia completa della macchina in produzione e operare su questa
 * Installare* il nuovo Shibboleth su quello vecchio
 * Far partire il nuovo IdP
 * Drogare il file hosts del/i client usato/i per i test
@@ -350,11 +350,11 @@ https://wiki.shibboleth.net/confluence/display/IDP30/UpgradingFromV2
 
 ## saml2:NameID persistent generation and storage
 
-* Distribuito su 3 file
+* Distribuito su 3 file:
  - saml-nameid.properties
  - saml-nameid.xml
  - c14n/subject-c14n.xml
-* Prendere nota di come lo si generava finora
+* Prendere nota di come lo si generava finora:
  - algoritmo di crittografia
  - composizione dell'attributo
  - salt
@@ -364,7 +364,7 @@ https://wiki.shibboleth.net/confluence/display/IDP30/UpgradingFromV2
 
 ## relying-parties.xml
 
-splittato in due files:
+splittato in due file:
 - **relying-parties.xml** con gli hook ai beans per effettuare fine-tuning su encryption o altre condizioni come la presentazione o meno del ToU, ecc...
 - **metadata-providers.xml** con gli hook ai MetadataProvider di tipo
 FilesystemMetadataProvider e FileBackedHTTPMetadataProvider
@@ -435,20 +435,24 @@ portati tutti nel servizio di NameID Generation
 
 ## E' tutto a posto?
 
-* Run e aggiustamenti successivi della configurazione secondo i warning molto esaustivi dell'idp-process.log. Ad esempio 
+* Run e aggiustamenti successivi della configurazione secondo i warning molto esaustivi dell'idp-process.log. Ad esempio:
 
 ```markdown
 org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: 
-Line 235 in XML document from file /opt/shibboleth-idp/conf/metadata-providers.xml]
-is invalid; nested exception is org.xml.sax.SAXParseException;
+Line 235 in XML document from file
+/opt/shibboleth-idp/conf/metadata-providers.xml]
+is invalid; nested exception is
+org.xml.sax.SAXParseException;
 lineNumber: 235; columnNumber: 62; cvc-complex-type.2.4.a:
-Invalid content was found starting with element 'RelyingParty'.
-One of '{"urn:mace:shibboleth:2.0:metadata":MetadataProvider}' is expected.
+Invalid content was found starting with
+element 'RelyingParty'.
+One of '{"urn:mace:shibboleth:2.0:metadata":MetadataProvider}'
+is expected.
 ```
-<span class="code-presenting-annotation fragment current-only" data-code-focus="2">Indicazione del file interessato dal problema</span>
-<span class="code-presenting-annotation fragment current-only" data-code-focus="4">Riga e colonna dell'errore</span>
-<span class="code-presenting-annotation fragment current-only" data-code-focus="5">Tipo di errore</span>
-<span class="code-presenting-annotation fragment current-only" data-code-focus="6">Cosa ci si sarebbe aspettati invece</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="2-3">Indicazione del file interessato dal problema.</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="6">Riga e colonna dell'errore.</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="7-8">Tipo di errore.</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="9-10">Cosa invece ci si sarebbe aspettati.</span>
 
 
 ---
@@ -948,7 +952,8 @@ defaultSigningCredentialRef="IdPCredential">
 org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException:
 Line 235 in XML document from file
 [/opt/shibboleth-idp/conf/metadata-providers.xml]
-is invalid; nested exception is org.xml.sax.SAXParseException;
+is invalid; nested exception is
+org.xml.sax.SAXParseException;
 lineNumber: 235; columnNumber: 62; 
 The prefix "rp" for element "rp:RelyingParty" is not bound.
 ```
@@ -959,11 +964,13 @@ The prefix "rp" for element "rp:RelyingParty" is not bound.
 org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException:
 Line 235 in XML document from file
 [/opt/shibboleth-idp/conf/metadata-providers.xml]
-is invalid; nested exception is org.xml.sax.SAXParseException;
+is invalid;
+nested exception is org.xml.sax.SAXParseException;
 lineNumber: 235; columnNumber: 62; cvc-complex-type.2.4.a:
 Invalid content was found starting
 with element 'RelyingParty'.
-One of '{"urn:mace:shibboleth:2.0:metadata":MetadataProvider}'
+One of 
+'{"urn:mace:shibboleth:2.0:metadata":MetadataProvider}'
 is expected.
 ```
 
@@ -974,7 +981,8 @@ relying-party.xml v3
 ```xml
 <!-- SAP Cloud Platform - Relying Party Configuration -->
 <!-- SINTASSI PER Shib3 -->
-<bean parent="RelyingPartyByName" c:relyingPartyIds="https://production.bocconi.ondemand.com/a287d8c16">
+<bean parent="RelyingPartyByName"
+ c:relyingPartyIds="https://production.bocconi.ondemand.com/a287d8c16">
   <property name="profileConfigurations">
     <list>
       <bean parent="Shibboleth.SSO"
@@ -1158,7 +1166,8 @@ attribute-resolver.xml
 
 - Shibboleth
    - Davide Bottalico - unina
-   - Leonardo Mariani e Loredana Martusciello - iit cnr
+   - Leonardo Mariani - iit cnr
+   - Loredana Martusciello - iit cnr
    - Marco Pirovano - unibocconi
    - Simone Lanzarini - cineca
 - SimpleSAMLphp (che pubblicheremo)

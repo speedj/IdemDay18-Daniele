@@ -38,7 +38,7 @@ https://bit.ly/2juhOmU
 * Accettazione dei ToU **registrata** nel log idp-consent-audit.log.
   * '20180502T200018Z|https://sdauth.sciencedirect.com/ |TermsAccepted|*principal* |my-tou-1.5||true'
 * I consensi specifici restano in un **coockie sicuro** sul browser (a scadenza programmabile lato IdP).
-* **Al cambiare** del testo nel ToU (hash) o del set di attributi da rilasciare, può essere *ripresentata la pagina di consenso automaticamente*.
+* **Al cambiare** della versione nel ToU o del set di attributi da rilasciare, può essere *ripresentata la pagina di consenso automaticamente*.
 
 ---
 
@@ -82,7 +82,7 @@ id="schacPersonalUniqueID" sourceAttributeID="schacCF">
  * Molto più leggero. Più immediato per chi non ha esperienza di Tomcat.
 * OpenJDK
 * Secure cookies client-side
- * rigenerare con seckeygen a cron ogni giorno la chiave di cifratura
+ * rigenerare la chiave di cifratura ogni giorno con seckeygen a cron
 
 
 ---
@@ -207,7 +207,7 @@ Power Features
 
 
 ## Extra Power
-* dipendenze degli attributi (Dependency) in modo da poter fare il merge di attributi con id sorgenti differenti
+* dipendenze degli attributi (Dependency) in modo da poter fare il merge di attributi con id sorgenti differenti (TemplateAttribute)
 * Tipo di autenticazione selezionabile per singolo SP
 * SSO disabilitabile per IP (vedi caso SPID) o con checkbox sulla pagina di login
 * Supporto per blacklist e whitelist di algoritmi di firma e crittografia (Poodle docet)
@@ -303,16 +303,23 @@ strategie di migrazione
    * idp.crt (che va nella nuova dir credentials)
    * idp.key (che va nella nuova dir credentials)
    * modalità di generazione del persistentID con il salt associato
+   * Chiave e certificato del web server
 
 
 ---
 
 
-## Fresh install
+## Passi fino alla produzione
 * Far partire il nuovo IdP
 * Drogare il file hosts del/i client usato/i per i test
 * Correggere gli errori guardando il idp-process.log
 * Una volta che tutto funziona, implementare le nuove funzionalità, una alla volta
+
+
+---
+
+
+## Messa in produzione
 * Spegnere l'IdP in produzione (planned downtime)
 * Sincronizzare il db del persistentID
 * Accendere il nuovo IdP in produzione
@@ -329,7 +336,7 @@ Formato:
 
 IP address sviluppo | FQDN produzione 
 --------------------|-----------------
-140.105.48.152 | idp.units.it
+140.105.78.12 | idp.units.it
 -----
 * Usare la finestra "incognito" del browser / ripulire i cookies
 
@@ -373,8 +380,7 @@ FilesystemMetadataProvider e FileBackedHTTPMetadataProvider
 ---
 
 
-## Elementi deprecati (FILTER)
-
+## Deprecati (FILTER)
 esempi:
 
 Legacy | Current
@@ -388,7 +394,7 @@ saml:AttributeRequesterInEntityGroup | InEntityGroup
 
 ---
 
-## Elementi deprecati (FILTER)
+## Deprecati (FILTER)
 ### Namespace deprecati
 
 basic: e saml: 
@@ -399,7 +405,7 @@ https://wiki.shibboleth.net/confluence/display/IDP30/AttributeFilterLegacyNameSp
 ---
 
 
-## Elementi deprecati (FILTER)
+## Deprecati (FILTER)
 
 - PolicyRequirementRule*Reference*
 - PermitValueRule*Reference*
@@ -644,9 +650,11 @@ attribute-filter.xml - R&S Entity Category
 dove i tipi di attributo built-in non bastano più
 
 +++
-
+## Necessità
   - Per scopi autorizzativi ho necessità di popolare un attributo GroupList ad uso degli SP interni non federati per passare i gruppi AD di appartenenza dell'utente.
 
++++
+attriute-resolver.xml
 ```xml
 <!-- Attributo per l'appartenenza ai gruppi AD -->
 
@@ -691,8 +699,7 @@ if (typeof memberOf != "undefined" && memberOf != null ){
 
 +++
 
-## Scripted attribute
-attribute-resolver.xml - eduPersonEntitlement
+## eduPersonEntitlement
 ```xml
 <!-- Risoluzione attributo eduPersonEntitlement -->
 <resolver:AttributeDefinition
@@ -719,6 +726,14 @@ attribute-resolver.xml - eduPersonEntitlement
 <span class="code-presenting-annotation fragment current-only" data-code-focus="5">Indichiamo epeList come attributo sorgente</span>
 <span class="code-presenting-annotation fragment current-only" data-code-focus="15-22">Attributo sorgente</span>
 <span class="code-presenting-annotation fragment current-only" data-code-focus="18-19">Referenziazione di uno script esterno con gli attributi del connettore Active Directory</span>
+
++++
+
+## Necessità
+
+* Mettere l'entitlement giusto i dipendenti universitari per poter richiedere un certificato personale Geant/Terena
+
+* Aggiungere l'entitlement necessario per l'amministrazione del servizio al mio username
 
 +++
 
@@ -751,6 +766,7 @@ if (typeof memberOf != "undefined" && memberOf != null ){
  }
 }
 ```
+<span class="code-presenting-annotation fragment current-only" data-code-focus="6-7">Aggiungo l'entitlement di amministrazion per gli utenti appartenenti al gruppo AD SBA-OCLC-Admins</span>
 
 +++
 
@@ -772,11 +788,13 @@ attribute-filter.xml - PolicyRequirementRule
 
  <PolicyRequirementRule xsi:type="AND">
   <Rule xsi:type="Requester" value="https://www.digicert.com/sso" />
-  <Rule xsi:type="Value" attributeID="eduPersonAffiliation" value="staff"/>
+  <Rule xsi:type="Value" attributeID="eduPersonAffiliation"
+   value="staff"/>
  </PolicyRequirementRule>
 
  <AttributeRule attributeID="eduPersonEntitlement">
-  <PermitValueRule xsi:type="ValueRegex" regex="^urn:mace:terena.org:tcs:.*$" />
+  <PermitValueRule xsi:type="ValueRegex" 
+  regex="^urn:mace:terena.org:tcs:.*$" />
  </AttributeRule>
 
  <AttributeRule attributeID="eduPersonPrincipalName">
@@ -794,10 +812,10 @@ attribute-filter.xml - PolicyRequirementRule
 </AttributeFilterPolicy>
 ```
 
-<span class="code-presenting-annotation fragment current-only" data-code-focus="4-7">quando (richiedente + particolare affiliazione)</span>
-<span class="code-presenting-annotation fragment current-only" data-code-focus="9-11">cosa (quale/i dei valori di entitlement)</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="4-8">quando (richiedente + particolare affiliazione)</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="10-13">cosa (quale/i dei valori di entitlement)</span>
 
-<span class="code-presenting-annotation fragment current-only" data-code-focus="11-99">altri attributi richiesti dal servizio</span>
+<span class="code-presenting-annotation fragment current-only" data-code-focus="13-99">altri attributi richiesti dal servizio</span>
 
 +++
 
@@ -1064,7 +1082,9 @@ validatorRef="shibboleth.NonFailFastValidator"
 **Problema2:**
 - Non è banale attivare dei VERI connettori di failover, e metterne uno con dati fake non è corretto, in quanto in caso di failure verrebbero ritornati attributi fake che non possiamo sapere come vengano trattati lato SP.
 
-**Soluzione:**
++++
+
+**Soluzione2:**
 - Definire un dataconnector fittizio di tipo static VUOTO ed inserirlo come FailoverDataConnector per TUTTI i DataConnector
 
 +++
@@ -1147,6 +1167,22 @@ attribute-resolver.xml
 
 </resolver:AttributeDefinition>
 ```
+
+<span class="code-presenting-annotation fragment current-only" 
+data-code-focus="1">Uso dell'attributo **mapped**</span>
+
+<span class="code-presenting-annotation fragment current-only" 
+data-code-focus="4-5">Definizione dell'attributo sorgente e la sua dipendenza (ldap)</span>
+
+<span class="code-presenting-annotation fragment current-only" 
+data-code-focus="10">Definizione di un valore di default</span>
+
+<span class="code-presenting-annotation fragment current-only" 
+data-code-focus="13-19">Definizione delle mappature</span>
+
+<span class="code-presenting-annotation fragment current-only" 
+data-code-focus="1-99"></span>
+
 
 ---
 

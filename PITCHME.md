@@ -37,7 +37,7 @@ https://bit.ly/2juhOmU
 ## Consenso esplicito
 * Accettazione dei ToU **registrata** nel log idp-consent-audit.log.
   * '20180502T200018Z|https://sdauth.sciencedirect.com/ |TermsAccepted|*principal* |my-tou-1.5||true'
-* I consensi specifici restano in un **coockie sicuro** sul browser (a scadenza programmabile lato IdP).
+* I consensi specifici restano in un **cookie sicuro** sul browser (a scadenza programmabile lato IdP).
 * **Al cambiare** della versione nel ToU o del set di attributi da rilasciare, può essere *ripresentata la pagina di consenso automaticamente*.
 
 ---
@@ -231,7 +231,7 @@ Power Features
 ## Clustering
 
 * Terracotta non piu' supportato
-* Sincronizzare le chiavi del keystore per i secure coockies
+* Sincronizzare le chiavi del keystore per i secure cookies
 * db (NameID:persistent/ePTID) su un cluster esterno
 * memcached consigliato in caso di Single Logout
 
